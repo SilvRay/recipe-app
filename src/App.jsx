@@ -1,19 +1,14 @@
 import { Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
-import styled from "styled-components";
+import RecipeDetailsPage from "./pages/RecipeDetailsPage";
 
 function App() {
   return (
-    <Wrapper>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-      </Routes>
-    </Wrapper>
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/:recipeId" element={<RecipeDetailsPage />} />
+    </Routes>
   );
 }
-
-const Wrapper = styled.div`
-  background-color: #232227;
-`;
 
 export default App;

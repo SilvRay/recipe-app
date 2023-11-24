@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import starIcon from "../assets/star_icon.png";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 const apiKey = import.meta.env.VITE_SPOONACULAR_API_KEY;
 
@@ -9,15 +9,27 @@ const Random = () => {
   const [randRecipes, setrandRecipes] = useState([]);
 
   const getRandRecipes = () => {
-    axios
-      .get(
-        `https://api.spoonacular.com/recipes/random?apiKey=${apiKey}&number=9`
-      )
-      .then((response) => {
-        console.log("Random recipes", response.data);
-        setrandRecipes(response.data.recipes);
-      })
-      .catch((err) => console.log("ERROR when retrieving random recipes", err));
+    const check = localStorage.getItem("randomRecipe");
+
+    if (check) {
+      setrandRecipes(JSON.parse(check));
+    } else {
+      axios
+        .get(
+          `https://api.spoonacular.com/recipes/random?apiKey=${apiKey}&number=9`
+        )
+        .then((response) => {
+          console.log("Random recipes", response.data);
+          localStorage.setItem(
+            "randomRecipe",
+            JSON.stringify(response.data.recipes)
+          );
+          setrandRecipes(response.data.recipes);
+        })
+        .catch((err) =>
+          console.log("ERROR when retrieving random recipes", err)
+        );
+    }
   };
 
   useEffect(() => {
@@ -25,9 +37,6 @@ const Random = () => {
   }, []);
 
   const getScore = (spoonScore) => {
-    console.log(
-      (Math.floor(spoonScore) - (Math.floor(spoonScore) % 10)) / 10 / 2
-    );
     const filledStars = Math.floor(
       (Math.floor(spoonScore) - (Math.floor(spoonScore) % 10)) / 10 / 2
     );
@@ -50,20 +59,22 @@ const Random = () => {
   return (
     <Wrapper>
       {randRecipes.map((recipe) => (
-        <Card key={recipe.id}>
-          <ImgRecipe>
-            <img src={recipe.image} alt={recipe.title} />
-          </ImgRecipe>
-          <InfoRecipe>
-            <h2>{recipe.title}</h2>
-            <div className="score">{getScore(recipe.spoonacularScore)}</div>
-            <p>
-              {recipe.readyInMinutes}
-              <br />
-              min
-            </p>
-          </InfoRecipe>
-        </Card>
+        <Link to={`/${recipe.id}`} key={recipe.id}>
+          <Card>
+            <ImgRecipe>
+              <img src={recipe.image} alt={recipe.title} />
+            </ImgRecipe>
+            <InfoRecipe>
+              <h2>{recipe.title}</h2>
+              <div className="score">{getScore(recipe.spoonacularScore)}</div>
+              <p>
+                {recipe.readyInMinutes}
+                <br />
+                min
+              </p>
+            </InfoRecipe>
+          </Card>
+        </Link>
       ))}
     </Wrapper>
   );
@@ -83,28 +94,38 @@ const Card = styled.div`
   background-color: #2f302f;
   width: 11rem;
   margin-top: 4rem;
+  padding-bottom: 2rem;
   display: flex;
   justify-content: center;
   align-items: end;
   position: relative;
-
-  img {
-    border-radius: 2rem;
-    object-fit: contain;
-    width: 10rem;
-  }
 `;
 
 const ImgRecipe = styled.div`
   position: absolute;
   top: -3rem;
-  left: 0.6rem;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 2rem;
+  overflow: hidden;
+
+  img {
+    border-radius: 2rem;
+    object-fit: contain;
+    width: 10rem;
+    transition: transform 0.4s;
+  }
+
+  img:hover {
+    transform: scale(1.1);
+  }
 `;
 
 const InfoRecipe = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 0.5rem;
 
   h2 {
     color: white;
