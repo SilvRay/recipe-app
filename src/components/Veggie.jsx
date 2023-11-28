@@ -2,7 +2,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
+import { ArrowBigLeft, ArrowBigRight, Circle, CircleDot } from "lucide-react";
+import { timer } from "../assets";
 
 const apiKey = import.meta.env.VITE_SPOONACULAR_API_KEY;
 
@@ -18,7 +19,7 @@ const Veggie = () => {
     } else {
       axios
         .get(
-          `https://api.spoonacular.com/recipes/random?apiKey=${apiKey}&number=3&tags=vegetarian`
+          `https://api.spoonacular.com/recipes/random?apiKey=${apiKey}&number=3&tags=vegan`
         )
         .then((response) => {
           console.log("Veggie recipe", response.data.recipes);
@@ -36,42 +37,79 @@ const Veggie = () => {
     getRandRecipes();
   }, []);
 
+  const showNextImage = () => {
+    setSlide((index) => {
+      if (slide === 2) {
+        setSlide(0);
+        return index === 0;
+      } else {
+        setSlide(index + 1);
+        return index + 1;
+      }
+    });
+  };
+
+  const showPrevImage = () => {
+    setSlide((index) => {
+      if (slide === 0) {
+        setSlide(2);
+        return index === 2;
+      } else {
+        setSlide(index - 1);
+        return index - 1;
+      }
+    });
+  };
+
   return (
     <Wrapper>
+      <button
+        onClick={showPrevImage}
+        className="img_slider_btn"
+        style={{
+          left: 0,
+        }}
+      >
+        <ArrowBigLeft />
+      </button>
       {veggie.map((recipe, index) => (
         <Link
           key={recipe.id}
           to={`/${recipe.id}`}
           className={slide === index ? "slide" : "slide slide-hidden"}
         >
-          <button
-            onClick={showNextImage}
-            className="img_slider_btn"
-            style={{
-              left: 0,
-            }}
-          >
-            <ArrowBigLeft />
-          </button>
           <div className="veggie_recipe_container">
             <img src={recipe.image} alt={recipe.title} />
             <div className="veggie_recipe">
               <h2>{recipe.title}</h2>
               <p>
-                <span>⌛</span>
+                <span>
+                  <img src={timer} alt="timer" />
+                </span>
                 {recipe.readyInMinutes}
               </p>
             </div>
           </div>
-          <button
-            onClick={showPrevImage}
-            className="img_slider_btn"
-            style={{ right: 0 }}
-          >
-            <ArrowBigRight />
-          </button>
         </Link>
       ))}
+      <button
+        onClick={showNextImage}
+        className="img_slider_btn"
+        style={{ right: 0 }}
+      >
+        <ArrowBigRight />
+      </button>
+      <DotBtn>
+        {veggie.map((_, index) => (
+          <button
+            key={index}
+            className="slider_dot_btn"
+            onClick={() => setSlide(index)}
+          >
+            {index === slide ? <CircleDot /> : <Circle />}
+          </button>
+        ))}
+      </DotBtn>
     </Wrapper>
   );
 };
@@ -85,30 +123,29 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
 
+  .img_slider_btn {
+    all: unset;
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    padding: 1rem;
+    cursor: pointer;
+    z-index: 10;
+  }
+
+  .img_slider_btn > * {
+    stroke: white;
+    fill: black;
+    width: 2rem;
+    height: 2rem;
+  }
+
   .slide {
     position: absolute;
     width: 100%;
     height: 100%;
     padding: 0 1rem;
-
-    .img_slider_btn {
-      all: unset;
-      display: block;
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      padding: 1rem;
-      cursor: pointer;
-      z-index: 10;
-      transition: background-color 0.1s ease-in-out;
-    }
-
-    .img_slider_btn > * {
-      stroke: white;
-      fill: black;
-      width: 2rem;
-      height: 2rem;
-    }
 
     .veggie_recipe_container {
       height: 100%;
@@ -124,13 +161,13 @@ const Wrapper = styled.div`
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 100%;
+        width: 358px;
         height: 100%;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        background-color: rgba(0, 0, 0, 0.3);
-        padding: 0 1rem;
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 2rem;
 
         h2 {
           color: white;
@@ -142,9 +179,16 @@ const Wrapper = styled.div`
 
         p {
           color: white;
+          margin-top: 0.3rem;
           text-shadow: 2px 2px 2px #000000;
-          padding-left: 2rem;
-          text-align: center;
+          font-weight: 600;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          img {
+            width: 2rem;
+          }
         }
       }
     }
@@ -152,6 +196,34 @@ const Wrapper = styled.div`
 
   .slide-hidden {
     display: none;
+  }
+`;
+
+const DotBtn = styled.div`
+  position: absolute;
+  bottom: 0.7rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.25rem;
+
+  .slider_dot_btn {
+    all: unset;
+    display: block;
+    width: 0.8rem;
+    height: 0.8rem;
+    cursor: pointer;
+    transition: scale 0.1s ease-in-out;
+  }
+
+  .slider_dot_btn:hover {
+    scale: 1.2;
+  }
+
+  .slider_dot_btn > * {
+    fill: black;
+    width: 100%;
+    height: 100%;
   }
 `;
 
