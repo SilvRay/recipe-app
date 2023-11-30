@@ -82,10 +82,8 @@ const Veggie = () => {
             <img src={recipe.image} alt={recipe.title} />
             <div className="veggie_recipe">
               <h2>{recipe.title}</h2>
-              <p>
-                <span>
-                  <img src={timer} alt="timer" />
-                </span>
+              <p className="timer_container">
+                <img src={timer} alt="timer" />
                 {recipe.readyInMinutes}
               </p>
             </div>
@@ -116,9 +114,11 @@ const Veggie = () => {
 
 const Wrapper = styled.div`
   position: relative;
-  width: 100%;
+  width: 358px;
   height: 11rem;
   padding: 0 1rem;
+  margin-left: auto;
+  margin-right: auto;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -143,7 +143,7 @@ const Wrapper = styled.div`
 
   .slide {
     position: absolute;
-    width: 100%;
+    width: 358px;
     height: 100%;
     padding: 0 1rem;
 
@@ -185,9 +185,11 @@ const Wrapper = styled.div`
           display: flex;
           justify-content: center;
           align-items: center;
+          gap: 0.2rem;
 
           img {
-            width: 2rem;
+            width: 1rem;
+            height: 1rem;
           }
         }
       }
