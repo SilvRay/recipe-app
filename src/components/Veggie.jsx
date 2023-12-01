@@ -117,11 +117,13 @@ const Wrapper = styled.div`
   width: 358px;
   height: 11rem;
   padding: 0 1rem;
+  margin-top: 5rem;
   margin-left: auto;
   margin-right: auto;
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 
   .img_slider_btn {
     all: unset;
@@ -151,6 +153,7 @@ const Wrapper = styled.div`
       height: 100%;
 
       img {
+        object-fit: contain;
         height: 100%;
         width: 100%;
         border-radius: 2rem;

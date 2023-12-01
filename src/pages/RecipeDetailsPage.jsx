@@ -186,6 +186,7 @@ const DetailsSection = styled.div`
       width: 50%;
       text-align: center;
       color: rgba(255, 255, 255, 0.6);
+      cursor: pointer;
     }
     .recipeBtn,
     .ingredientsBtn {

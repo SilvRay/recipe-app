@@ -45,9 +45,6 @@ const Random = () => {
     for (let i = 0; i < filledStars; i++) {
       starIcons.push("⭐");
     }
-    // for (let i = 0; i < emptyStars; i++) {
-    //   starIcons.push("☆⭐");
-    // }
 
     return starIcons;
   };
@@ -99,6 +96,7 @@ const Card = styled.div`
   justify-content: center;
   align-items: end;
   position: relative;
+  cursor: pointer;
 `;
 
 const ImgRecipe = styled.div`
